@@ -25,47 +25,50 @@
 import sys
 
 # Token types
-TOK_PRINT  = 0
-TOK_ID     = 1
-TOK_VAR    = 2
-TOK_INT    = 3
-TOK_FLOAT  = 4
-TOK_TYPE   = 5
-TOK_EQ     = 6
-TOK_PLUS   = 7
-TOK_MINUS  = 8
-TOK_STAR   = 9
-TOK_SLASH  = 10
+TOK_PRINT = 0
+TOK_ID = 1
+TOK_VAR = 2
+TOK_INT = 3
+TOK_FLOAT = 4
+TOK_TYPE = 5
+TOK_EQ = 6
+TOK_PLUS = 7
+TOK_MINUS = 8
+TOK_STAR = 9
+TOK_SLASH = 10
 TOK_LPAREN = 11
 TOK_RPAREN = 12
-TOK_COLON  = 13
-TOK_WHILE  = 14
-TOK_DO     = 15
-TOK_DONE   = 16
-TOK_SEMI   = 17
-TOK_READ   = 18
+TOK_COLON = 13
+TOK_WHILE = 14
+TOK_DO = 15
+TOK_DONE = 16
+TOK_SEMI = 17
+TOK_READ = 18
 
 # AST nodes
-AST_DECL   = 0
+AST_DECL = 0
 AST_ASSIGN = 1
-AST_PRINT  = 2
-AST_INT    = 3
-AST_FLOAT  = 4
-AST_ID     = 5
-AST_BINOP  = 6
-AST_WHILE  = 7
-AST_READ   = 8
+AST_PRINT = 2
+AST_INT = 3
+AST_FLOAT = 4
+AST_ID = 5
+AST_BINOP = 6
+AST_WHILE = 7
+AST_READ = 8
 
 
 def error(msg):
     print("Error: " + msg)
     sys.exit(1)
 
+
 def tok(ty, val):
-    return { "toktype": ty, "value": val }
+    return {"toktype": ty, "value": val}
+
 
 def astnode(nodetype, **args):
     return dict(nodetype=nodetype, **args)
+
 
 def lex(s):
     """
@@ -146,7 +149,7 @@ def lex(s):
                 tokens.append(tok(TOK_FLOAT, float(num)))
             else:
                 tokens.append(tok(TOK_INT, int(num)))
-            i -= 1 # Read one char too many, readjust.
+            i -= 1  # Read one char too many, readjust.
 
         # Identifiers and keywords
         elif c.isalpha() or c == "_":
@@ -154,7 +157,7 @@ def lex(s):
             while s[i].isalnum() or s[i] == "_":
                 ident += s[i]
                 i += 1
-            i -= 1 # Read one char too many, readjust.
+            i -= 1  # Read one char too many, readjust.
             if ident == "print":
                 tokens.append(tok(TOK_PRINT, None))
             elif ident == "read":
@@ -400,6 +403,7 @@ def typecheck(ast, symtab):
     - The two operands of an arithmetic operations must be of the same type
     - An expression can be assigned to a variable only if their types are equal
     """
+
     def check_stmt(stmt):
         if stmt["nodetype"] == AST_PRINT:
             typed_expr = check_expr(stmt["expr"])
@@ -439,10 +443,12 @@ def typecheck(ast, symtab):
     updated_stmts = []
     for stmt in ast["stmts"]:
         updated_stmts.append(check_stmt(stmt))
-    return { "decls": ast["decls"], "stmts": updated_stmts }
+    return {"decls": ast["decls"], "stmts": updated_stmts}
 
 
 curr_tmp = 0
+
+
 def codegen(ast, symtab):
     """
     Input : the AST and symbol table of a mini program
@@ -463,6 +469,7 @@ def codegen(ast, symtab):
     A typical code generator would return a structure that could then
     be manipulated for analysis and optimization.
     """
+
     def new_temp():
         """Return a new, unique temporary variable name."""
         global curr_tmp
@@ -529,14 +536,12 @@ def codegen(ast, symtab):
     print("}")
 
 
-
-
 def main():
     src = sys.stdin.read()
-    toks = lex(src)                      # source -> tokens
-    ast = parse(toks)                    # tokens -> AST
-    symtab = build_symtab(ast)           # AST -> symbol table
-    typed_ast = typecheck(ast, symtab)   # AST * symbol table -> Typed AST
+    toks = lex(src)  # source -> tokens
+    ast = parse(toks)  # tokens -> AST
+    symtab = build_symtab(ast)  # AST -> symbol table
+    typed_ast = typecheck(ast, symtab)  # AST * symbol table -> Typed AST
     codegen(typed_ast, symtab)  # Typed AST * symbol table -> C code
 
 
