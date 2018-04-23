@@ -7,6 +7,7 @@ AST_ID = 5
 AST_BINOP = 6
 AST_WHILE = 7
 AST_READ = 8
+AST_RETURN = 9
 
 
 def astnode(nodetype, **args):

@@ -28,15 +28,25 @@ from parser import parse
 from build_symbol_table import build_symtab
 from typecheck import typecheck
 from codegen import codegen
+from tac_gen import tac_gen
 
 
 def main():
-    src = sys.stdin.read()
+    # src = sys.stdin.read()
+    src = open('./demos/conditional.mini', 'r').read()
     toks = lex(src)  # source -> tokens
     ast = parse(toks)  # tokens -> AST
     symtab = build_symtab(ast)  # AST -> symbol table
     typed_ast = typecheck(ast, symtab)  # AST * symbol table -> Typed AST
-    codegen(typed_ast, symtab)  # Typed AST * symbol table -> C code
+
+    print("\nTAC Equivalent\n==================================")
+    tac_gen(typed_ast, symtab)  # Typed AST * symbol table -> TAC Code
+
+    # print("\nC Equivalent\n==================================")
+    # codegen(typed_ast, symtab)  # Typed AST * symbol table -> C code
+
+    # print("\nExecuting Code\n==================================")
+    # codegen()
 
 
 if __name__ == "__main__":

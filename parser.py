@@ -107,7 +107,7 @@ def parse(toks):
 
     def stmts():
         stmts = []
-        while peek() in (TOK_PRINT, TOK_READ, TOK_ID, TOK_WHILE):
+        while peek() in (TOK_PRINT, TOK_RETURN, TOK_READ, TOK_ID, TOK_WHILE):
             stmts.append(stmt())
         return stmts
 
@@ -124,6 +124,11 @@ def parse(toks):
             e = expr()
             consume(TOK_SEMI)
             return astnode(AST_PRINT, expr=e)
+        elif next_tok == TOK_RETURN:
+            consume(TOK_RETURN)
+            e = expr()
+            consume(TOK_SEMI)
+            return astnode(AST_RETURN, expr=e)
         elif next_tok == TOK_READ:
             consume(TOK_READ)
             id = consume(TOK_ID)
@@ -157,7 +162,7 @@ def parse(toks):
     def term():
         f = factor()
         next_tok = peek()
-        while next_tok in (TOK_STAR, TOK_SLASH):
+        while next_tok in (TOK_STAR, TOK_SLASH, TOK_GTHAN, TOK_LTHAN):
             if next_tok == TOK_STAR:
                 consume(TOK_STAR)
                 f2 = factor()
@@ -166,6 +171,14 @@ def parse(toks):
                 consume(TOK_SLASH)
                 f2 = factor()
                 f = astnode(AST_BINOP, op="/", lhs=f, rhs=f2)
+            elif next_tok == TOK_GTHAN:
+                consume(TOK_GTHAN)
+                f2 = factor()
+                f = astnode(AST_BINOP, op=">", lhs=f, rhs=f2)
+            elif next_tok == TOK_LTHAN:
+                consume(TOK_LTHAN)
+                f2 = factor()
+                f = astnode(AST_BINOP, op="<", lhs=f, rhs=f2)
             next_tok = peek()
         return f
 

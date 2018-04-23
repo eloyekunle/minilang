@@ -23,6 +23,9 @@ def typecheck(ast, symtab):
         if stmt["nodetype"] == AST_PRINT:
             typed_expr = check_expr(stmt["expr"])
             return astnode(AST_PRINT, expr=typed_expr)
+        elif stmt["nodetype"] == AST_RETURN:
+            typed_expr = check_expr(stmt["expr"])
+            return astnode(AST_RETURN, expr=typed_expr)
         elif stmt["nodetype"] == AST_READ:
             return astnode(AST_READ, id=stmt["id"])
         elif stmt["nodetype"] == AST_ASSIGN:

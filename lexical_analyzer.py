@@ -69,6 +69,10 @@ def lex(s):
             tokens.append(tok(TOK_COLON, None))
         elif c == ";":
             tokens.append(tok(TOK_SEMI, None))
+        elif c == ">":
+            tokens.append(tok(TOK_GTHAN, None))
+        elif c == "<":
+            tokens.append(tok(TOK_LTHAN, None))
 
         # Integer and float literals
         elif c.isdigit():
@@ -96,6 +100,8 @@ def lex(s):
             i -= 1  # Read one char too many, readjust.
             if ident == "print":
                 tokens.append(tok(TOK_PRINT, None))
+            elif ident == "return":
+                tokens.append(tok(TOK_RETURN, None))
             elif ident == "read":
                 tokens.append(tok(TOK_READ, None))
             elif ident == "var":
